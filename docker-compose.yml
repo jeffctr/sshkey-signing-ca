@@ -1,0 +1,56 @@
+version: '3.7'
+
+networks:
+  localdev:
+    external: true
+    name: localdev
+
+services:
+  master:
+    build:
+        context: .
+    networks:
+        - localdev
+    container_name: master_node
+    restart: on-failure
+    ports:
+      - 22:2222
+    volumes:
+        - ./shared:/shared
+    environment:
+      - VIRTUAL_HOST=master_node.docker
+      - VIRTUAL_PORT=22
+    privileged: true
+
+  worker:
+    build:
+        context: .
+    networks:
+        - localdev
+    container_name: worker_node
+    restart: on-failure
+    ports:
+        - 8888:8888
+    volumes:
+        - ./shared:/shared
+    environment:
+        - VIRTUAL_HOST=worker_node.docker
+        - VIRTUAL_PORT=2222
+    privileged: true
+
+  worker2:
+    build:
+        context: .
+    networks:
+        - localdev
+    container_name: worker_node2
+    restart: on-failure
+    ports:
+      - 2020:2020
+    volumes:
+        - ./shared:/shared
+    environment:
+      - VIRTUAL_HOST=worker_node2.docker
+      - VIRTUAL_PORT=2020
+    privileged: true
+
